@@ -1,0 +1,121 @@
+* organizing larger programs
+
+packages are directories, modules are files
+
+python checks sys.path when looking for a module
+PYTHONPATH env var listing paths added to sys.path
+
+** creating packages
+
+to execute a directory create a module (file) __main__.py
+we can also put all directory in a zip file and execute it with python
+
+dir_in_syspath/my_package/__init__.py
+
+__init__.py
+
+__all__ = ['module1', 'module2']  # a list of modules imported with 'from module import *'
+
+* beyond basic functions
+
+class Resolver:
+    def __init__(self):
+        self._cache = {}
+
+    defa __call__(self, host):
+        if host not in self._cache:
+            self._cache['host'] = socket.gethostbyname(host)
+        return self._cache[host]
+
+as we defined __call__ we can call our object directly
+resolver = Resolver()
+resolver('google.com')
+This is useful to create functions which maintain state between calls.
+
+*   args and kwargs
+
+def trace(f, *args, **kwargs):
+    print('args=', args)
+    print('kwargs=', kwargs)
+    result = f(*args, **kwargs)
+    print('result=', result)
+    return result
+
+int('ff', base=16)
+trace(int, 'ff', base=16)
+
+
+monday = [1,2,3]
+tuesday = [1,1,2]
+wednesday = [1,2,2]
+daily = [monday, tuesday, wednesday]
+tranposed = list(zip(*daily))   # a common idiom in python
+
+* decorators 
+
+** example
+
+def escape_unicode(f):
+    def wrap(*args, **kwargs):
+        result = f(*args, **kwargs)
+        return ascii(result)
+    return wrap
+
+@escape_unicode
+def umlaut():
+    return 'ümlaut'
+
+
+** instance as decorator
+
+class Trace():
+    def __init__(self):
+        self.enabled = True
+
+    def __call__(self, f):
+        def wrap(*args, **kwargs):
+            if(self.emabled):
+                print("calling {}", format(f))
+            return f(*args, **kwargs)
+        return wrap
+
+tracer = Trace()
+
+@tracer
+def rotate_list(l):
+    return l[1:] + [l[0]]
+
+now we can enable or disable tracing by setting
+tracer.enabled = True
+
+
+** class as decorator
+similar to instance decorator but use @Trace instead of @Trace. Can be used to count the number of calls of a func
+
+
+* property
+
+class Container:
+    
+    MAX_CELSIUS = 4.0 # this is a class attribute
+
+    def __init__(self, temp):
+        if(temp > MAX_CELSIUS):
+            raise ValueError("temp too hot")
+        self.celsius = temp
+
+but we can assign
+    container.celsius = 10.0
+
+To avoid this use @property
+
+    @property
+    def celsius(self):
+        return self.celsius
+
+    @celsius.setter
+    def celsius(self, value):
+        ...
+
+
+

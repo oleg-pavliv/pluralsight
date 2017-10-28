@@ -1,0 +1,111 @@
+* setup django
+
+create virtualenv
+
+create project: $ django-admin.py startproject PROJECT-NAME
+    creates a directory PROJECT-NAME with several files
+        urls.py: admin urls
+        settings.py: installed apps, DB, middleware (fw of hooks into request/response processing)
+
+run server: $ python manage.py runserver
+
+create application: $ python manage.py startapp APPL-NAME
+    creates a directory APPL-NAME:
+        models.py views.py admin.py
+
+add the appl to settings.py INSTALLED_APPS
+
+implement models
+
+$ python manage.py makemigrations
+creates a file in migrations dir to create a tables in the DB
+
+$ python manage.py migrate
+creates tables
+
+models example:
+
+class List(models.Model):
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return "List: {} ".format(self.name)
+
+class Card(models.Model):
+    title = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
+    list = models.ForeignKey(List, related_name='cards')
+    story_points = models.IntegerField(null=True, blank=True)
+    business_value = models.IntegerField(null=True, blank=True)
+
+    def __str__(self):
+        return "Card: {} ".format(self.title)
+
+
+register classes in admin interface to be able to add objects. Edit APPL-NAME/admin.py
+
+from django.contrib import admin
+from .models import List, Card
+
+admin.site.register(List)
+admin.site.register(Card)
+
+create superuser $ python manage.py createsuperuser
+
+
+* django rest fw
+
+install $ pip install djangorestframework
+
+** implement serializers
+
+from rest_framework import serializers
+from .models import List, Card
+
+class ListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = List
+        fields= '__all__'  
+
+
+class CardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Card
+        fields= '__all__'  
+
+
+** implement api
+
+from rest_framework.generics import ListAPIView
+from .serializers import ListSerializer, CardSerializer
+from .models import List, Card
+
+class ListApi(ListAPIView):
+    queryset = List.objects.all()
+    serializer_class = ListSerializer
+
+class CardApi(ListAPIView):
+    queryset = Card.objects.all()
+    serializer_class = CardSerializer
+
+** set urls
+
+from django.conf.urls import url
+from .api import ListApi, CardApi
+
+urlpatterns = [
+    url(r'^lists$', ListApi.as_view()),
+    url(r'^cards$', CardApi.as_view()),
+]
+
+and add it to the project urls.py
+
+urlpatterns = [
+    url(r'^admin/', admin.site.urls),
+    url(r'^scrumboard/', include('APPL-NAME.urls')),
+]
+
+
+also add 'rest_framework' to INSTALLED_APPS to display in the browser
+
+

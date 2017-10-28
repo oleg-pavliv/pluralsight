@@ -1,0 +1,18 @@
+advantages:
+- no naming: with CSS we need to invent names which soon become unintuitive (OuterTitle)
+- easy refactoring: just cut and paste. With CSS we need to find a CSS styles and copy them as well
+- easy inline editing: everything is just in place, no need to look for different classes in separate CSS files
+
+
+CSS 7 problems (from Christopher Chedeau):
+1. Global namespaces
+2. Dependencies: how to specify only css you need
+3. Dead code elimination
+4. Minification: minimize class names
+5. Sharing constants: comments "you have to keep this in sync with another CSS class, etc"
+6. Non-deterministic resolution: if more than one rules can be applied
+7. Isolation
+
+https://medium.com/@andrewingram/my-thoughts-on-inline-styles-da94682b5e35
+https://www.engineyard.com/blog/inline-styles-yes-or-no
+

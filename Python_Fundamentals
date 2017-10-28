@@ -1,0 +1,222 @@
+* Objects
+
+id() returns unique id. Should be used only for debugging.
+Otherwise 'is' operator should be used to check equity of identity
+
+Function default arguments are evaluated only once when def is executed
+
+Names are looked up in four nested scopes Local, Enclosing, Global and Build-in
+
+Reference should be declared global in local scope:
+
+gl_var = 5
+
+def f():
+    gl_var = 44 #local variable is created
+    global gl_var = 44 # global is used
+
+Everything is an object including functions and modules
+import and def result in binding to named references
+
+type determines the type
+dir() gets object attrs
+
+* Collections
+
+tuple, str, range, list, dict, set
+
+** tuple
+
+() can be omitted:
+p = 1,2,3,4 the same as p = (1,2,3,4)
+used to return mult values from a function
+def minmax(p):
+    return min(p), max(p)
+
+tuple unpacking: a,b = 1,2 or a,b = b,a
+
+** str
+
+use join to concatenate strings ''.join("one", "two")
+from, separator, to = "Bern:Geneva"
+"The age of {0} is {1}".format("John", 10)
+
+** list
+
+l[1,-1] all elems except the first and the last
+copy a list cpl = l[:] or cpl = l.copy() or cpl = list(l). All these are shallow copy
+
+deleting by index: del l[idx] or by value l.remove("abc")
+
+sort inplace, sorted returns a new list, same for reverse vs reversed: lc=list(reversed(l))
+
+** dict
+
+keys must be immutable, values cat be mutable
+
+
+pretty printing:
+from pprint import pprint as pp
+d = {'one': 1, 'two': 2}
+pp(d)
+
+** set
+
+each elem must be immutable
+
+remove: error if not present, discard: no error
+
+methods: union, intersection, difference, symmetric_difference
+predicats: issubset, issuperset, isdisjoint
+
+
+* Exceptions
+
+def convert(s):
+    try:
+        x = int(s)
+    except (ValueError, TypeError) as e:
+        print("failed {}".format(str(e)), file=sys.stderr)
+        raise
+    return x
+
+Common exceptions: IndexError, ValueError, KeyError, TypeError
+
+Look Before You Leap (check everything beforehand) vs It's Easier to Ask Forgiveness than Permission (just try it)
+Pythonic way is EAFP
+
+LBYL:
+
+if os.path.exists(filename):
+    process_file(filename)
+else:
+    print('no such file')
+
+problems: checks only existence, may be directoy, race condition
+
+EAFP:
+
+try:
+    process_file(filename)
+except OSError as e:
+    print('error {}'.format(str(e)))
+
+
+Clean up
+
+try: 
+...
+finally:
+
+
+** platform specific code
+
+try:
+    import msvcrt
+
+    def my_func():
+       windows specific code
+
+except ImportError:
+
+    def my_func():
+       linux code
+
+
+* comprehensions
+
+list, set or dict compr: 
+country2capital = {'UK': 'London', 'France': 'Paris'}
+capital2country = {capital: country for country, capital in country2capital}
+
+filter: [i for in in range(100) if is_prime(i)]
+
+
+iterator:
+i = iter(l)
+next(i)
+
+generators: 
+  specify iterable sequences: generators are iterators
+  lazily evaluated
+  can model infinite seq
+  composable into pipelines
+
+  def gen123():
+      yield 1
+      yield 2
+      yield 3
+
+  def distinct(iterable):
+      """ return unique item """
+
+      seen = set()
+      for item in iterable():
+          if item in seen:
+              continue
+          yield item
+          seen.add(item)
+
+  for item in distinct(l):
+      print(item)
+
+
+generator comprehensions
+million_squares = (i*i for i in range(1000001)) #lazy eval
+
+sum(x*x for x in range(10000) if is_prime(x)) # everything inside sum(...) is a generator comprehension => no memory consumption
+
+
+* Classes
+
+class Flight:
+
+    def __init__(self, number):      # initializer not a contstructor because object already exists
+        self._number = number        # _ indicates an internal member: in python everything is public
+
+    def number(self):
+        return self._number
+
+f = Flight()
+
+
+In python classes are used less intensively than in Java or C#. Instead function are used.
+
+DuckTyping: polymorphism is determined by attributes and functions available in runtime, not a static hierarchy
+
+Inheritance is used mostly to share implementation.
+
+class Derived(Base):
+    pass
+
+
+* Unit tests
+
+def count_lines(filename):
+    with open(filename, 'r') as f:
+        return sum(1 for _ in f)
+
+
+class TextAnalysisText(unittest.TestCase):
+
+    def setUp(self):  # fixture to setup tests
+        create_a_file_with_4_lines()
+
+    def tearDown(self): # fixture to do clean up
+       delete_test_file()
+    
+    def test_func_runs(self):   # test functions are prefixed with test_
+        self.assertEqual(count_lines(), 4)
+
+
+Other tests: assertRaises(IOError)
+
+* Debugging with pdb
+
+python -m pdb appl.py
+
+
+    if __name__ == '__main__':
+        unittest.main()
+
+ 
