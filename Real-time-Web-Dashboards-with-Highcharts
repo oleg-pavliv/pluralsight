@@ -1,0 +1,41 @@
+http://colorbrewer2.org/  choose a color for a map
+
+* Bar charts
+  Used to display categories
+  
+  Do:
+    - Compare distict values
+    - Use color to highlight a single (!) bar. Don't use different colors for every bar
+  Dont:
+    - Change Y axis to not start at zero (skewing data)
+    - Create stacked bars: can be confusing
+
+* Line chars
+
+  Do: 
+    - Comare values over time
+    - Show trend lines
+    - Year by year comparison: each line a separate year
+  Dont:
+    - Shrink X axis to show steeper growth (to distinguish flat lines)
+    - Label every data point
+ 
+  Focus on visual, add details later (tooltips, etc)
+
+* Scatter plots
+
+  Do:
+    - disaggregate results to see individual points, patterns, etc
+    - use distinct measurements (not obvious like duration/cost of project) e.g. size of project / profit
+  Dont:
+    - aggregate highly
+    - use dozens of colors
+
+* Chart types to avoid:
+  - Pie (or any radial): difficult to compare angles
+  - stacked
+  - 3D
+  - Decorative (noise)
+
+
+
